@@ -766,7 +766,8 @@ function buildRoundList(panel, r) {
   panel.appendChild(list);
 
   // Events
-  panel.querySelectorAll('.score-num-input').forEach(inp => {
+  const allInputs = Array.from(panel.querySelectorAll('.score-num-input'));
+  allInputs.forEach((inp, idx) => {
     inp.addEventListener('blur', () => {
       const t = +inp.dataset.team;
       const raw = inp.value.replace(/[^0-9]/g, '');
@@ -777,6 +778,21 @@ function buildRoundList(panel, r) {
     });
     inp.addEventListener('focus', () => {
       setTimeout(() => inp.select(), 10);
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        // Save current value first
+        const t = +inp.dataset.team;
+        const raw = inp.value.replace(/[^0-9]/g, '');
+        const val = raw === '' ? null : Math.max(0, parseInt(raw) || 0);
+        inp.value = val === null ? '' : val;
+        state.teams[t].scores[r] = val;
+        saveState();
+        // Move to next input
+        const next = allInputs[idx + 1];
+        if (next) next.focus();
+      }
     });
   });
 
