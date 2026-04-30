@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>RumHam Score Sheet</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;800&display=swap');
   :root {
     --bg: #0f0f13;
     --surface: #1a1a22;
@@ -49,7 +49,7 @@
   .setup-title {
     font-size: 34px;
     font-weight: 800;
-    font-family: 'Syne', sans-serif;
+    
     letter-spacing: -0.5px;
     margin-bottom: 4px;
     color: var(--accent);
@@ -173,7 +173,7 @@
     color: #000;
     font-size: 20px;
     font-weight: 800;
-    font-family: 'Syne', sans-serif;
+    
     padding: 18px;
     cursor: pointer;
     box-shadow: 0 6px 24px rgba(240,192,64,0.35);
@@ -202,7 +202,7 @@
   .header-title {
     font-size: 22px;
     font-weight: 800;
-    font-family: 'Syne', sans-serif;
+    
     color: var(--accent);
   }
 
@@ -493,7 +493,7 @@
     color: #000;
     font-size: 16px;
     font-weight: 800;
-    font-family: 'Syne', sans-serif;
+    
     padding: 14px;
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(240,192,64,0.35);
@@ -528,17 +528,17 @@
       <div class="setup-field">
         <label>Rounds</label>
         <div class="stepper">
-          <button onclick="stepRounds(-1)">−</button>
+          <button >−</button>
           <div class="stepper-val" id="rounds-val">3</div>
-          <button onclick="stepRounds(1)">+</button>
+          <button >+</button>
         </div>
       </div>
       <div class="setup-field">
         <label>Teams</label>
         <div class="stepper">
-          <button onclick="stepTeams(-1)">−</button>
+          <button >−</button>
           <div class="stepper-val" id="teams-val">8</div>
-          <button onclick="stepTeams(1)">+</button>
+          <button >+</button>
         </div>
       </div>
     </div>
@@ -550,7 +550,7 @@
       <div id="team-names-grid"></div>
     </div>
 
-    <button class="btn-start" onclick="startQuiz()">🚀 Start Quiz Night</button>
+    <button class="btn-start" onclick="startQuiz()">Start Quiz Night</button>
   </div>
 </div>
 
@@ -595,6 +595,27 @@ let state = {
   activeTab: 0,
   activeLbTab: 'overall', // 'overall' | 'round-0' | 'round-1' ...
 };
+
+// ══════════════ HOLD-TO-REPEAT UTILITY ══════════════
+function addHoldRepeat(btn, action) {
+  let timer = null;
+  let interval = null;
+  function start() {
+    action();
+    timer = setTimeout(() => { interval = setInterval(action, 80); }, 400);
+  }
+  function stop() {
+    clearTimeout(timer);
+    clearInterval(interval);
+    timer = null; interval = null;
+  }
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('touchend', stop);
+  btn.addEventListener('touchcancel', stop);
+}
 
 // ══════════════ SETUP ══════════════
 let setupRounds = 3;
@@ -760,7 +781,7 @@ function buildRoundList(panel, r) {
   });
 
   panel.querySelectorAll('.score-stepper-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    const action = () => {
       const t = +btn.dataset.team;
       const isPlus = btn.classList.contains('plus');
       const curr = state.teams[t].scores[r] ?? 0;
@@ -769,7 +790,8 @@ function buildRoundList(panel, r) {
       saveState();
       const inp = panel.querySelector(`.score-num-input[data-team="${t}"][data-round="${r}"]`);
       if (inp) inp.value = next;
-    });
+    };
+    addHoldRepeat(btn, action);
   });
 }
 
@@ -979,6 +1001,19 @@ function esc(str) {
 // ══════════════ INIT ══════════════
 (function init() {
   renderTeamNameInputs();
+
+  // Wire setup stepper buttons for hold-to-repeat
+  document.querySelectorAll('.stepper button').forEach(btn => {
+    const isPlus = btn.textContent.trim() === '+';
+    const parent = btn.closest('.setup-field');
+    const isRounds = parent && parent.querySelector('#rounds-val');
+    btn.removeAttribute('onclick');
+    addHoldRepeat(btn, () => {
+      if (isRounds) stepRounds(isPlus ? 1 : -1);
+      else stepTeams(isPlus ? 1 : -1);
+    });
+  });
+
   if (loadState() && state.teams && state.teams.length) {
     buildApp();
   } else {
