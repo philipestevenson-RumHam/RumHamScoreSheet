@@ -23,7 +23,7 @@
     --radius: 10px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 
   body {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -543,14 +543,14 @@
       </div>
     </div>
 
+    <button class="btn-start" onclick="startQuiz()">Start Quiz Night</button>
+
     <div class="divider"></div>
 
     <div class="teams-section">
       <label>Team Names</label>
       <div id="team-names-grid"></div>
     </div>
-
-    <button class="btn-start" onclick="startQuiz()">Start Quiz Night</button>
   </div>
 </div>
 
