@@ -125,44 +125,91 @@
   }
 
   #team-names-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    max-height: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
     overflow-y: auto;
   }
 
   .team-name-input-wrap {
     display: flex;
     align-items: center;
+    gap: 8px;
+  }
+
+  .team-name-input-wrap input {
+    flex: 1;
+    min-width: 0;
     background: var(--bg);
     border: 1.5px solid rgba(255,255,255,0.1);
     border-radius: 10px;
-    overflow: hidden;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 12px;
+    outline: none;
     transition: border-color 0.2s;
   }
-  .team-name-input-wrap:focus-within { border-color: var(--accent2); }
+  .team-name-input-wrap input:focus { border-color: var(--accent2); }
 
   .team-num-badge {
-    width: 32px;
-    min-width: 32px;
+    width: 22px;
+    min-width: 22px;
     text-align: center;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-muted);
-    padding-left: 8px;
+    flex-shrink: 0;
   }
 
-  .team-name-input-wrap input {
+  .player-count-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+  .player-count-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .player-count-stepper {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+  }
+  .player-count-stepper button {
     background: none;
     border: none;
     color: var(--text);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 12px 10px;
-    width: 100%;
-    outline: none;
+    font-size: 22px;
+    font-weight: 300;
+    width: 36px;
+    height: 42px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+  .player-count-stepper button:active { background: rgba(255,255,255,0.1); }
+  .player-count-val {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent2);
+    user-select: none;
+  }
+
 
   .btn-start {
     margin-top: 28px;
@@ -257,6 +304,39 @@
   /* ── ROUND SCORE ENTRY ── */
   .round-panel { display: none; padding: 16px 20px; }
   .round-panel.active { display: block; }
+
+  .round-max-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .round-max-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .round-max-input {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    background: var(--bg);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    width: 64px;
+    height: 40px;
+    outline: none;
+    -webkit-appearance: none;
+  }
 
   /* List layout for scores */
   .score-list {
@@ -360,6 +440,35 @@
   #leaderboard-panel.active { display: flex; }
 
   /* Sub-tab bar inside leaderboard */
+  /* ── Leaderboard mode tabs (Raw / Per Player) ── */
+  .lb-mode-bar {
+    display: flex;
+    gap: 0;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+    padding: 0 16px;
+  }
+  .lb-mode-btn {
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .lb-mode-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .lb-mode-panel { display: none; }
+  .lb-mode-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
   .lb-subtab-bar {
     display: flex;
     overflow-x: auto;
@@ -435,6 +544,15 @@
   .lb-team { font-weight: 600; }
   .lb-score { font-weight: 800; color: var(--accent2); font-size: 18px; }
 
+  /* Per-player table: fixed layout, all data columns equally spaced */
+  .lb-table.pp-table { table-layout: fixed; }
+  .lb-table.pp-table .col-players { width: 52px; text-align: center; }
+  .lb-table.pp-table .col-stat    { width: 15%; text-align: center; }
+  .lb-table.pp-table th.col-stat,
+  .lb-table.pp-table td.col-stat  { text-align: center; }
+  .lb-table.pp-table th.col-players,
+  .lb-table.pp-table td.col-players { text-align: center; }
+
   .empty-msg {
     text-align: center;
     color: var(--text-muted);
@@ -506,12 +624,10 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 
+
+
   @media (min-width: 768px) {
-    #team-names-grid { grid-template-columns: 1fr 1fr 1fr; }
     .score-row-name { font-size: 17px; }
-  }
-  @media (min-width: 1024px) {
-    #team-names-grid { grid-template-columns: repeat(4, 1fr); }
   }
 </style>
 </head>
@@ -592,8 +708,10 @@ let state = {
   rounds: 3,
   teamCount: 8,
   teams: [],
+  roundMaxPoints: [],
   activeTab: 0,
-  activeLbTab: 'overall', // 'overall' | 'round-0' | 'round-1' ...
+  activeLbTab: 'overall',
+  activeLbMode: 'raw',
 };
 
 // ══════════════ HOLD-TO-REPEAT UTILITY ══════════════
@@ -634,30 +752,57 @@ function stepTeams(d) {
 
 function renderTeamNameInputs() {
   const grid = document.getElementById('team-names-grid');
-  const existing = Array.from(grid.querySelectorAll('input')).map(i => i.value);
+  const existing = Array.from(grid.querySelectorAll('.team-name-input-wrap')).map(w => ({
+    name: w.querySelector('input').value,
+    players: parseInt(w.querySelector('.player-count-val')?.textContent) || 1
+  }));
   grid.innerHTML = '';
   for (let i = 0; i < setupTeams; i++) {
+    const prevName = existing[i]?.name || '';
+    const prevPlayers = existing[i]?.players || 1;
     const wrap = document.createElement('div');
     wrap.className = 'team-name-input-wrap';
     wrap.innerHTML = `
       <span class="team-num-badge">${i+1}</span>
-      <input type="text" placeholder="Team ${i+1}" maxlength="28" value="${existing[i] || ''}">
+      <input type="text" placeholder="Team ${i+1}" maxlength="28" value="${prevName}">
+      <div class="player-count-wrap">
+        <span class="player-count-label">👤</span>
+        <div class="player-count-stepper">
+          <button data-idx="${i}" data-dir="-1">−</button>
+          <span class="player-count-val">${prevPlayers}</span>
+          <button data-idx="${i}" data-dir="1">+</button>
+        </div>
+      </div>
     `;
     grid.appendChild(wrap);
+    wrap.querySelectorAll('.player-count-stepper button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const valEl = btn.closest('.player-count-stepper').querySelector('.player-count-val');
+        const dir = parseInt(btn.dataset.dir);
+        const cur = parseInt(valEl.textContent) || 1;
+        valEl.textContent = Math.max(1, Math.min(50, cur + dir));
+      });
+    });
   }
 }
 
-function getTeamNamesFromSetup() {
-  return Array.from(document.querySelectorAll('#team-names-grid input'))
-    .map((inp, i) => inp.value.trim() || `Team ${i+1}`);
+function getTeamDataFromSetup() {
+  return Array.from(document.querySelectorAll('#team-names-grid .team-name-input-wrap'))
+    .map((wrap, i) => ({
+      name: wrap.querySelector('input').value.trim() || `Team ${i+1}`,
+      players: parseInt(wrap.querySelector('.player-count-val')?.textContent) || 1
+    }));
 }
 
 function startQuiz() {
-  const teams = getTeamNamesFromSetup().map(name => ({
+  const teamData = getTeamDataFromSetup();
+  const teams = teamData.map(({ name, players }) => ({
     name,
+    players,
     scores: Array(setupRounds).fill(null)
   }));
-  state = { rounds: setupRounds, teamCount: setupTeams, teams, activeTab: 0, activeLbTab: 'overall' };
+  const roundMaxPoints = Array(setupRounds).fill(null);
+  state = { rounds: setupRounds, teamCount: setupTeams, teams, roundMaxPoints, activeTab: 0, activeLbTab: 'overall', activeLbMode: 'raw' };
   saveState();
   buildApp();
 }
@@ -670,7 +815,20 @@ function saveState() {
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { state = JSON.parse(raw); return true; }
+    if (raw) {
+      state = JSON.parse(raw);
+      // Migration: add players to teams if missing
+      if (state.teams) {
+        state.teams = state.teams.map(t => ({ players: 1, ...t }));
+      }
+      // Migration: add roundMaxPoints if missing
+      if (!state.roundMaxPoints) {
+        state.roundMaxPoints = Array(state.rounds).fill(null);
+      }
+      // Migration: add activeLbMode if missing
+      if (!state.activeLbMode) state.activeLbMode = 'raw';
+      return true;
+    }
   } catch(e) {}
   return false;
 }
@@ -734,6 +892,28 @@ function buildContent() {
 function buildRoundList(panel, r) {
   panel.innerHTML = '';
 
+  // Max points row
+  const maxRow = document.createElement('div');
+  maxRow.className = 'round-max-row';
+  const maxVal = state.roundMaxPoints[r] !== null && state.roundMaxPoints[r] !== undefined ? state.roundMaxPoints[r] : '';
+  maxRow.innerHTML = `
+    <span class="round-max-label">Max points this round</span>
+    <div class="score-row-controls" style="justify-content:center;">
+      <input class="round-max-input score-num-input" type="text" inputmode="numeric" pattern="[0-9]*"
+        placeholder="—" value="${maxVal}" data-maxround="${r}">
+    </div>
+  `;
+  panel.appendChild(maxRow);
+  const maxInp = maxRow.querySelector('.round-max-input');
+  maxInp.addEventListener('blur', () => {
+    const raw = maxInp.value.replace(/[^0-9]/g,'');
+    const v = raw === '' ? null : Math.max(1, parseInt(raw)||1);
+    maxInp.value = v === null ? '' : v;
+    if (!state.roundMaxPoints) state.roundMaxPoints = Array(state.rounds).fill(null);
+    state.roundMaxPoints[r] = v;
+    saveState();
+  });
+
   const list = document.createElement('div');
   list.className = 'score-list';
 
@@ -766,7 +946,7 @@ function buildRoundList(panel, r) {
   panel.appendChild(list);
 
   // Events
-  const allInputs = Array.from(panel.querySelectorAll('.score-num-input'));
+  const allInputs = Array.from(panel.querySelectorAll('.score-num-input:not(.round-max-input)'));
   allInputs.forEach((inp, idx) => {
     inp.addEventListener('blur', () => {
       const t = +inp.dataset.team;
@@ -782,14 +962,12 @@ function buildRoundList(panel, r) {
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
-        // Save current value first
         const t = +inp.dataset.team;
         const raw = inp.value.replace(/[^0-9]/g, '');
         const val = raw === '' ? null : Math.max(0, parseInt(raw) || 0);
         inp.value = val === null ? '' : val;
         state.teams[t].scores[r] = val;
         saveState();
-        // Move to next input
         const next = allInputs[idx + 1];
         if (next) next.focus();
       }
@@ -815,6 +993,45 @@ function buildRoundList(panel, r) {
 function buildLeaderboardPanel(lbPanel) {
   lbPanel.innerHTML = '';
 
+  // Mode toggle bar (Raw / Per Player)
+  const modeBar = document.createElement('div');
+  modeBar.className = 'lb-mode-bar';
+  modeBar.innerHTML = `
+    <button class="lb-mode-btn${(state.activeLbMode||'raw')==='raw' ? ' active' : ''}" data-mode="raw">Raw Scores</button>
+    <button class="lb-mode-btn${(state.activeLbMode||'raw')==='perplayer' ? ' active' : ''}" data-mode="perplayer">Per Player</button>
+  `;
+  modeBar.querySelectorAll('.lb-mode-btn').forEach(btn => {
+    btn.onclick = () => switchLbMode(btn.dataset.mode);
+  });
+  lbPanel.appendChild(modeBar);
+
+  // Raw mode panel
+  const rawPanel = document.createElement('div');
+  rawPanel.className = 'lb-mode-panel' + ((state.activeLbMode||'raw')==='raw' ? ' active' : '');
+  rawPanel.id = 'lb-mode-raw';
+  lbPanel.appendChild(rawPanel);
+  buildRawModePanel(rawPanel);
+
+  // Per player mode panel
+  const ppPanel = document.createElement('div');
+  ppPanel.className = 'lb-mode-panel' + ((state.activeLbMode||'raw')==='perplayer' ? ' active' : '');
+  ppPanel.id = 'lb-mode-perplayer';
+  lbPanel.appendChild(ppPanel);
+  buildPerPlayerModePanel(ppPanel);
+}
+
+function switchLbMode(mode) {
+  state.activeLbMode = mode;
+  saveState();
+  document.querySelectorAll('.lb-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  document.querySelectorAll('.lb-mode-panel').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(`lb-mode-${mode}`);
+  if (target) target.classList.add('active');
+}
+
+function buildRawModePanel(container) {
+  container.innerHTML = '';
+
   // Sub-tab bar
   const subBar = document.createElement('div');
   subBar.className = 'lb-subtab-bar';
@@ -836,19 +1053,210 @@ function buildLeaderboardPanel(lbPanel) {
     subBar.appendChild(btn);
   }
 
-  lbPanel.appendChild(subBar);
+  container.appendChild(subBar);
 
-  // Content area
   const lbContent = document.createElement('div');
   lbContent.className = 'lb-content';
   lbContent.id = 'lb-content';
-  lbPanel.appendChild(lbContent);
+  container.appendChild(lbContent);
 
-  // Build sub-panels
   buildLbSubPanels(lbContent);
-
-  // Show correct sub-tab
   switchLbTab(state.activeLbTab || 'overall', false);
+}
+
+function buildPerPlayerModePanel(container) {
+  container.innerHTML = '';
+
+  // Sub-tab bar
+  const subBar = document.createElement('div');
+  subBar.className = 'lb-subtab-bar';
+
+  const overallBtn = document.createElement('button');
+  overallBtn.className = 'lb-subtab-btn';
+  overallBtn.dataset.pptab = 'overall';
+  overallBtn.textContent = '🏆 Overall';
+  overallBtn.onclick = () => switchPpTab('overall', container);
+  subBar.appendChild(overallBtn);
+
+  for (let r = 0; r < state.rounds; r++) {
+    const btn = document.createElement('button');
+    btn.className = 'lb-subtab-btn';
+    btn.dataset.pptab = `round-${r}`;
+    btn.textContent = `Round ${r+1}`;
+    btn.onclick = () => switchPpTab(`round-${r}`, container);
+    subBar.appendChild(btn);
+  }
+
+  container.appendChild(subBar);
+
+  const ppContent = document.createElement('div');
+  ppContent.className = 'lb-content';
+  ppContent.id = 'lb-pp-content';
+  container.appendChild(ppContent);
+
+  buildPpSubPanels(ppContent);
+  switchPpTab('overall', container, false);
+}
+
+function buildPpSubPanels(container) {
+  container.innerHTML = '';
+
+  const overallPanel = document.createElement('div');
+  overallPanel.className = 'lb-sub-panel';
+  overallPanel.id = 'lb-pp-sub-overall';
+  overallPanel.innerHTML = buildPpOverallHTML();
+  container.appendChild(overallPanel);
+
+  for (let r = 0; r < state.rounds; r++) {
+    const rPanel = document.createElement('div');
+    rPanel.className = 'lb-sub-panel';
+    rPanel.id = `lb-pp-sub-round-${r}`;
+    rPanel.innerHTML = buildPpRoundHTML(r);
+    container.appendChild(rPanel);
+  }
+}
+
+function switchPpTab(tabKey, container, save = true) {
+  if (save) saveState();
+  container.querySelectorAll('[data-pptab]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.pptab === tabKey);
+  });
+  container.querySelectorAll('.lb-sub-panel').forEach(p => p.classList.remove('active'));
+  const id = tabKey === 'overall' ? 'lb-pp-sub-overall' : `lb-pp-sub-${tabKey}`;
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+}
+
+// Per-player efficiency: (score / maxPoints) * 100 / players
+function teamEfficiency(score, maxPts) {
+  if (maxPts === null || maxPts === 0) return null;
+  return (score / maxPts) * 100;
+}
+
+function playerEfficiency(score, maxPts, players) {
+  if (maxPts === null || maxPts === 0 || players === 0) return null;
+  return (score / maxPts) * 100 / players;
+}
+
+function ppPerPlayer(score, players) {
+  if (players === 0) return null;
+  return score / players;
+}
+
+function buildPpOverallHTML() {
+  const totalMax = state.roundMaxPoints ? state.roundMaxPoints.reduce((s, v) => s + (v ?? 0), 0) : 0;
+  const hasAnyMax = totalMax > 0;
+
+  const sorted = [...state.teams]
+    .map((t, i) => {
+      const total = totalScore(t);
+      const players = t.players || 1;
+      const ppp = ppPerPlayer(total, players);
+      const teamEff = hasAnyMax ? teamEfficiency(total, totalMax) : null;
+      const playerEff = hasAnyMax ? playerEfficiency(total, totalMax, players) : null;
+      return { ...t, orig: i, total, ppp, teamEff, playerEff };
+    })
+    .sort((a, b) => (b.playerEff ?? b.ppp ?? 0) - (a.playerEff ?? a.ppp ?? 0));
+
+  let note = '';
+  if (!hasAnyMax) {
+    note = `<div style="padding:0 0 10px;font-size:12px;color:var(--text-muted)">ℹ️ Set max points per round to see efficiency columns. Showing pts/player ranking instead.</div>`;
+  }
+
+  let html = note + `<table class="lb-table pp-table"><thead><tr>
+    <th style="width:44px">#</th>
+    <th>Team</th>
+    <th class="col-players">👤</th>
+    <th class="col-stat">Total</th>
+    ${hasAnyMax ? '<th class="col-stat">Team Efficiency</th>' : ''}
+    <th class="col-stat">Pts / Player</th>
+    ${hasAnyMax ? '<th class="col-stat">Player Efficiency</th>' : ''}
+  </tr></thead><tbody>`;
+
+  sorted.forEach((team, idx) => {
+    const rank = idx + 1;
+    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+    const pos = medal ? `<span class="medal">${medal}</span>` : `<span class="lb-pos" style="color:var(--text-muted)">${rank}</span>`;
+    const posClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+    const ppp = team.ppp !== null ? team.ppp.toFixed(2) : '—';
+    const tEff = team.teamEff !== null ? team.teamEff.toFixed(1) + '%' : '—';
+    const pEff = team.playerEff !== null ? team.playerEff.toFixed(1) + '%' : '—';
+    html += `<tr class="${posClass}">
+      <td>${pos}</td>
+      <td class="lb-team">${esc(team.name)}</td>
+      <td class="col-players lb-score">${team.players||1}</td>
+      <td class="lb-score col-stat">${team.total}</td>
+      ${hasAnyMax ? `<td class="lb-score col-stat">${tEff}</td>` : ''}
+      <td class="lb-score col-stat">${ppp}</td>
+      ${hasAnyMax ? `<td class="lb-score col-stat">${pEff}</td>` : ''}
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  return html;
+}
+
+function buildPpRoundHTML(r) {
+  const maxPts = state.roundMaxPoints?.[r] ?? null;
+  const hasMax = maxPts !== null && maxPts > 0;
+
+  const sorted = [...state.teams]
+    .map((t, i) => {
+      const score = t.scores[r];
+      const players = t.players || 1;
+      const ppp = score !== null ? ppPerPlayer(score, players) : null;
+      const teamEff = (score !== null && hasMax) ? teamEfficiency(score, maxPts) : null;
+      const playerEff = (score !== null && hasMax) ? playerEfficiency(score, maxPts, players) : null;
+      return { ...t, orig: i, score, ppp, teamEff, playerEff };
+    })
+    .sort((a, b) => {
+      const av = a.playerEff ?? a.ppp ?? -1;
+      const bv = b.playerEff ?? b.ppp ?? -1;
+      return bv - av;
+    });
+
+  const hasScores = sorted.some(t => t.score !== null);
+  if (!hasScores) {
+    return `<div class="empty-msg">No scores entered yet for Round ${r+1} 📝</div>`;
+  }
+
+  let note = '';
+  if (!hasMax) {
+    note = `<div style="padding:0 0 10px;font-size:12px;color:var(--text-muted)">ℹ️ Set max points for Round ${r+1} to see efficiency columns.</div>`;
+  }
+
+  let html = note + `<table class="lb-table pp-table"><thead><tr>
+    <th style="width:44px">#</th>
+    <th>Team</th>
+    <th class="col-players">👤</th>
+    <th class="col-stat">Score</th>
+    ${hasMax ? '<th class="col-stat">Team Efficiency</th>' : ''}
+    <th class="col-stat">Pts / Player</th>
+    ${hasMax ? '<th class="col-stat">Player Efficiency</th>' : ''}
+  </tr></thead><tbody>`;
+
+  sorted.forEach((team, idx) => {
+    if (team.score === null) return;
+    const rank = idx + 1;
+    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+    const pos = medal ? `<span class="medal">${medal}</span>` : `<span class="lb-pos" style="color:var(--text-muted)">${rank}</span>`;
+    const posClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+    const ppp = team.ppp !== null ? team.ppp.toFixed(2) : '—';
+    const tEff = team.teamEff !== null ? team.teamEff.toFixed(1) + '%' : '—';
+    const pEff = team.playerEff !== null ? team.playerEff.toFixed(1) + '%' : '—';
+    html += `<tr class="${posClass}">
+      <td>${pos}</td>
+      <td class="lb-team">${esc(team.name)}</td>
+      <td class="col-players lb-score">${team.players||1}</td>
+      <td class="lb-score col-stat">${team.score}</td>
+      ${hasMax ? `<td class="lb-score col-stat">${tEff}</td>` : ''}
+      <td class="lb-score col-stat">${ppp}</td>
+      ${hasMax ? `<td class="lb-score col-stat">${pEff}</td>` : ''}
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  return html;
 }
 
 function buildLbSubPanels(container) {
